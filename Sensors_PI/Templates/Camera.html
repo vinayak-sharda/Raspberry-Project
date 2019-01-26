@@ -1,0 +1,16 @@
+<!--Live to code, Code to live-->
+
+<html>
+    <head>
+            <title>Raspberry PI</title> 
+    </head>
+    <body>
+        <h1>Welcome</h1>
+        
+        <form method="POST">
+			<input type="submit" value="Start Image Sensor">
+            {% csrf_token %}
+        </form>
+     <img src="/media/image.jpg" height="100" width="100">
+    </body>
+</html>
