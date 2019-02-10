@@ -1,0 +1,70 @@
+<!--Live to code, Code to live-->
+
+
+<html>
+	
+	<script>
+		window.setTimeout(function () {
+			location.href = "http://localhost:8000/";
+			}, 5000);
+		</script>
+		
+    <head>
+            <title>Raspberry PI</title> 
+	    <style>
+	     tr:nth-child(even) {background-color: #f2f2f2;}
+	     tr:hover {background-color: #f5f5f5;}
+	     th {
+		background-color: #4CAF50;
+		color: white;
+		}
+	     h1 {
+		color: blue;
+		font-family: verdana;
+		font-size: 300%;
+		}		
+	    </style>
+
+</head>
+    <body>
+        <h1>Welcome to RaspberryPI</h1>
+        
+        <form method="POST" >
+			<input type="submit" name="action"value="Refresh">
+			<input type="submit" name="action" value="Stop _thermal"/>
+			<input type="submit" name="action"value="Stop_Camera">
+			{% csrf_token %}
+        </form>
+        <h3>{{result}}</h3>
+			<br>
+
+        <table style="float: left" id="id_list_table" border="1">
+		<tr>
+			<th>Sr. No</th>
+			<th>Time</th> 
+			<th>Temperature in Celsius</th>
+		</tr>
+		   
+		{% for key, value in data_therm%}   
+        <tr>		
+			<td> {{forloop.counter}}</td>
+			<td> {{ value }}</td>
+			<td> {{ key }}</td>
+			{% endfor %} 
+        </tr>   
+        </table>
+	
+	<table style="float: centre" id="id_list_table" border="1">
+		<tr>
+			<th>Image</th>
+		</tr>
+		   
+		
+		<tr>		
+			<td><img src="/media/image.jpg" height="200" width="200"></td>
+		</tr>   
+        </table>
+
+        
+    </body>
+</html>

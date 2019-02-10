@@ -35,10 +35,80 @@ def read_temp():
         
 store_data = list()
 store_time = list()
-data_therm = zip(store_data, store_time)
+status = list()
+
+status.append("Both Working")
 
 if os.path.exists("/home/pi/Desktop/Project/Sensors_PI/media/image.jpg"):
 	os.remove("/home/pi/Desktop/Project/Sensors_PI/media/image.jpg")
+	
+def capture_image():
+	try:
+		camera = PiCamera() 
+		camera.capture('/home/pi/Desktop/Project/Sensors_PI/media/image.jpg')
+		camera.close()
+		time.sleep(2)
+		
+	except:
+		time.sleep(1)
+		camera = PiCamera() 
+		camera.capture('/home/pi/Desktop/Project/Sensors_PI/media/image.jpg')
+		camera.close()
+	
+	finally:
+		camera.close()
+
+def home_page(request):
+	
+	action = request.POST.get('action', False)
+	
+	if action == False:
+		pass
+	elif action == "Stop _thermal":
+		status.append("Stop _thermal")
+	elif action == "Stop_Camera":
+		status.append("Stop_Camera")
+	elif action =="Refresh":
+		status.append("Refresh")
+		
+	
+	if status[-1] == "Both Working":
+		store_data.append(read_temp())
+		store_time.append(time.ctime())
+		capture_image()
+		result = "Both Sensors are working."
+		return render(request,"HomePage.html",{"result":result,'data_therm':zip(store_data, store_time)})
+	
+	elif status[-1] == "Stop _thermal":
+		if status[-2]=="Stop_Camera":
+			result = "Both Sensors have stopped working."
+			return render(request,"HomePage.html",{"result":result,'data_therm':zip(store_data, store_time)})	
+		capture_image()
+		result = "Thermal Sensor has stopped."
+		return render(request,"HomePage.html",{"result":result,'data_therm':zip(store_data, store_time)})
+		
+	elif status[-1] == "Stop_Camera":
+		if status[-2] == "Stop _thermal":
+			result = "Both Sensors have stopped working."
+			return render(request,"HomePage.html",{"result":result,'data_therm':zip(store_data, store_time)})
+			
+		store_data.append(read_temp())
+		store_time.append(time.ctime())
+		result = "Camera Sensor has stopped."
+		return render(request,"HomePage.html",{"result":result,'data_therm':zip(store_data, store_time)})
+		
+	elif status[-1] == "Refresh":
+		del store_data[:]
+		del store_time[:]
+		os.remove("/home/pi/Desktop/Project/Sensors_PI/media/image.jpg")
+		status.append("Both Working")
+		result = "Both Sensors are working."
+		return render(request,"HomePage.html",{"result":result,'data_therm':zip(store_data, store_time)})
+
+		
+		
+		
+		#{{ redirect_url }}
 
 
 def home(request):	
